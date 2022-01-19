@@ -13,6 +13,7 @@ public class MessageManager {
 
     private MessageManager() {
         messages.put("FUEL:DISTANCE-TOO-HIGH", "La distance de recherche est trop élevée");
+        messages.put("FUEL:CITY-INVALID", "Le nom de la ville est invalide");
     }
 
     public String getMessage(String identifier) {
