@@ -20,8 +20,9 @@ public class RecordFieldAdapter extends TypeAdapter<RecordField> {
         RecordField recordField = new RecordField();
         reader.beginObject();
 
+        String name;
         while (reader.hasNext()) {
-            switch (reader.nextName()) {
+            switch (name = reader.nextName()) {
                 case "geo_point":
                     reader.beginArray();
                     double[] points = new double[2];
@@ -49,23 +50,12 @@ public class RecordFieldAdapter extends TypeAdapter<RecordField> {
                 case "update":
                     recordField.setLastUpdate(reader.nextString());
                     break;
-                case "price_e10":
-                    recordField.getFuels().put(FuelType.E10, reader.nextDouble());
-                    break;
-                case "price_e85":
-                    recordField.getFuels().put(FuelType.E85, reader.nextDouble());
-                    break;
-                case "price_gazole":
-                    recordField.getFuels().put(FuelType.GAZOLE, reader.nextDouble());
-                    break;
-                case "price_sp98":
-                    recordField.getFuels().put(FuelType.SP98, reader.nextDouble());
-                    break;
-                case "price_gplc":
-                    recordField.getFuels().put(FuelType.GLPC, reader.nextDouble());
-                    break;
                 default:
-                    reader.skipValue();
+                    if(name.startsWith("price_")) {
+                        recordField.getFuels().put(FuelType.valueOf(name.split("_")[1].toUpperCase()), reader.nextDouble());
+                    } else {
+                        reader.skipValue();
+                    }
             }
         }
 

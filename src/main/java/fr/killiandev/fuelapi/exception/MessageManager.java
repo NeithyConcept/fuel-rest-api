@@ -12,7 +12,8 @@ public class MessageManager {
     @Getter private final Map<String, String> messages = new HashMap<>();
 
     private MessageManager() {
-        messages.put("FUEL:DISTANCE-TOO-HIGH", "La distance de recherche est trop élevée");
+        // Register the messages
+        messages.put("FUEL:RADIUS-TOO-HIGH", "La distance de recherche est trop élevée");
         messages.put("FUEL:CITY-INVALID", "Le nom de la ville est invalide");
     }
 

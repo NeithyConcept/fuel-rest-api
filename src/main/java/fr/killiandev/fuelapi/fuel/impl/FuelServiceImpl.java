@@ -38,11 +38,12 @@ public class FuelServiceImpl implements FuelService {
 
     @Async
     @Override
-    public CompletableFuture<FuelRequest> getFuelInformation(double latitude, double longitude, int distance) throws IOException, InterruptedException {
-        if(distance > Constants.MAX_DISTANCE)
-            throw new FuelException("DISTANCE-TOO-HIGH");
+    public CompletableFuture<FuelRequest> getFuelInformation(double latitude, double longitude, int radius) throws IOException, InterruptedException {
+        if(radius > Constants.MAX_RADIUS)
+            throw new FuelException("RADIUS-TOO-HIGH");
 
-        URI uri = builder.addParameter("geofilter.distance", latitude + "," + longitude + "," + distance).build();
+        // Use the default builder and build a URI with this params
+        URI uri = builder.addParameter("geofilter.distance", latitude + "," + longitude + "," + radius).build();
         LOGGER.info("Send request with latitude/longitude/distance: " + uri);
 
         return CompletableFuture.completedFuture(sendRequest(uri));
@@ -53,12 +54,21 @@ public class FuelServiceImpl implements FuelService {
         if(city == null || city.equals(""))
             throw new FuelException("CITY-INVALID");
 
+        // Use the default builder and build a URI with the city
         URI uri = builder.addParameter("q", city).build();
         LOGGER.info("Send request with city: " + uri);
 
         return CompletableFuture.completedFuture(sendRequest(uri));
     }
 
+    /**
+     * Sends a request to the {@link Constants.BASE_URL} and returns the result
+     *
+     * @param uri the uri with his parameters
+     * @return the result of the query
+     * @throws IOException if an I/O error occurs when sending or receiving
+     * @throws InterruptedException if the operation is interrupted
+     */
     private FuelRequest sendRequest(URI uri) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()

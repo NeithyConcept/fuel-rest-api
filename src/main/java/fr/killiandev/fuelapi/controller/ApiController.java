@@ -1,41 +1,38 @@
 package fr.killiandev.fuelapi.controller;
 
-import fr.killiandev.fuelapi.fuel.FuelService;
 import fr.killiandev.fuelapi.fuel.models.FuelRequest;
 import fr.killiandev.fuelapi.fuel.models.FuelType;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
-@RestController
 @RequestMapping("/")
-public class ApiController {
+public interface ApiController {
 
-    public final FuelService fuelService;
+    /**
+     * @param latitude the latitude
+     * @param longitude the lontitude
+     * @param radius the radius in meters
+     * @return the result of the query
+     */
+    @GetMapping("/search/{latitude}/{longitude}/{radius}")
+    CompletableFuture<ResponseEntity<FuelRequest>> search(@PathVariable() double latitude, @PathVariable() double longitude,
+                                                          @PathVariable() int radius) throws IOException, InterruptedException;
 
-    public ApiController(FuelService fuelService) {
-        this.fuelService = fuelService;
-    }
-
-    @GetMapping("/search/{latitude}/{longitude}/{distance}")
-    public CompletableFuture<ResponseEntity<FuelRequest>> search(@PathVariable() double latitude, @PathVariable()
-            double longitude, @PathVariable() int distance) throws IOException, InterruptedException {
-        return fuelService.getFuelInformation(latitude, longitude, distance).thenApply(fuelRequest -> new ResponseEntity<>(fuelRequest, HttpStatus.OK));
-    }
-
+    /**
+     * @param city the city
+     * @return the result of the query
+     */
     @GetMapping("/search/{city}")
-    public CompletableFuture<ResponseEntity<FuelRequest>> search(@PathVariable() String city) throws IOException, InterruptedException {
-        return fuelService.getFuelInformation(city).thenApply(fuelRequest -> new ResponseEntity<>(fuelRequest, HttpStatus.OK));
-    }
+    CompletableFuture<ResponseEntity<FuelRequest>> search(@PathVariable() String city) throws IOException, InterruptedException;
 
+    /**
+     * @return all the fuels supported
+     */
     @GetMapping("/fuels")
-    public ResponseEntity<FuelType[]> fuels() {
-        return new ResponseEntity<>(FuelType.values(), HttpStatus.OK);
-    }
+    ResponseEntity<FuelType[]> fuels();
 }

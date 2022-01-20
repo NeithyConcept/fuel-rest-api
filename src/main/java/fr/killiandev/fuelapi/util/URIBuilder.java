@@ -5,21 +5,42 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * Class to create a URI for GET requests
+ */
 public class URIBuilder {
 
     private String baseUrl;
     private final Map<String, String> parameters = new HashMap<>();
 
+    /**
+     * Sets the base url
+     *
+     * @param baseUrl the base url
+     * @return this builder
+     */
     public URIBuilder baseURL(String baseUrl) {
         this.baseUrl = baseUrl;
         return this;
     }
 
+    /**
+     * Adds a parameter
+     *
+     * @param key the parameter's key
+     * @param value the parameter's value
+     * @return this builder
+     */
     public URIBuilder addParameter(String key, String value) {
         parameters.put(key, value);
         return this;
     }
 
+    /**
+     * Returns a new {@link URI} built from the current state of this builder
+     *
+     * @return a new {@link URI}
+     */
     public URI build() {
         StringBuilder stringBuilder = new StringBuilder(baseUrl);
 
@@ -32,6 +53,11 @@ public class URIBuilder {
         return URI.create(stringBuilder.toString());
     }
 
+    /**
+     * Create a new {@link URIBuilder}
+     *
+     * @return an {@link URIBuilder}
+     */
     public static URIBuilder newBuilder() {
         return new URIBuilder();
     }
