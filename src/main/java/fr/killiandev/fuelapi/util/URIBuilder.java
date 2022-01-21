@@ -8,10 +8,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Class to create a URI for GET requests
  */
-public class URIBuilder {
+public class URIBuilder implements Cloneable {
 
     private String baseUrl;
-    private final Map<String, String> parameters = new HashMap<>();
+    private Map<String, String> parameters = new HashMap<>();
 
     /**
      * Sets the base url
@@ -51,6 +51,23 @@ public class URIBuilder {
         });
 
         return URI.create(stringBuilder.toString());
+    }
+
+    /**
+     * Clone this builder
+     *
+     * @return a new {@link URIBuilder} cloned
+     */
+    @Override
+    public URIBuilder clone() {
+        try {
+            URIBuilder builder = (URIBuilder) super.clone();
+            builder.parameters = new HashMap<>(this.parameters);
+            return builder;
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**

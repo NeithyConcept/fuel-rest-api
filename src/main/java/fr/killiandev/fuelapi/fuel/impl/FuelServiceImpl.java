@@ -43,7 +43,7 @@ public class FuelServiceImpl implements FuelService {
             throw new FuelException("RADIUS-TOO-HIGH");
 
         // Use the default builder and build a URI with this params
-        URI uri = builder.addParameter("geofilter.distance", latitude + "," + longitude + "," + radius).build();
+        URI uri = builder.clone().addParameter("geofilter.distance", latitude + "," + longitude + "," + radius).build();
         LOGGER.info("Send request with latitude/longitude/distance: " + uri);
 
         return CompletableFuture.completedFuture(sendRequest(uri));
@@ -55,7 +55,7 @@ public class FuelServiceImpl implements FuelService {
             throw new FuelException("CITY-INVALID");
 
         // Use the default builder and build a URI with the city
-        URI uri = builder.addParameter("q", city).build();
+        URI uri = builder.clone().addParameter("q", city).build();
         LOGGER.info("Send request with city: " + uri);
 
         return CompletableFuture.completedFuture(sendRequest(uri));
